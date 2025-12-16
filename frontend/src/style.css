@@ -1,0 +1,66 @@
+/* FILE: frontend/src/style.css */
+
+/* 1. Khai báo biến màu sắc */
+:root {
+  /* Màu chủ đạo */
+  --primary-color: #6366f1; /* Indigo */
+  --secondary-color: #a855f7; /* Purple */
+  
+  /* Màu nền của các thẻ (Card) - Kính mờ */
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --text-color: #1f2937;
+}
+
+/* 2. Cấu hình cho Body (Phần nền chính) */
+body {
+  margin: 0;
+  padding: 20px; /* Thêm padding để trên mobile không bị sát lề */
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-color);
+  
+  /* Đảm bảo nền luôn phủ kín màn hình */
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+
+  /* --- PHẦN QUAN TRỌNG NHẤT: TẠO NỀN --- */
+  /* Gradient chéo từ tím sang xanh dương đậm */
+  background-image: linear-gradient(135deg, #4c1d95 0%, #3b82f6 100%);
+  background-attachment: fixed; /* Giữ nền cố định khi cuộn trang */
+  background-size: cover;
+  
+  /* Căn giữa nội dung */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 3. Thêm một lớp phủ vân nhẹ (Optional) để tạo chất liệu */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Tạo vân chấm bi mờ cực nhẹ */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* 4. Các hiệu ứng chung khác */
+button {
+  transition: all 0.3s ease;
+}
+button:active {
+  transform: scale(0.98);
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 600;
+  transition: color 0.3s;
+}
+a:hover {
+  color: var(--secondary-color);
+}

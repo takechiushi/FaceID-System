@@ -11,6 +11,7 @@ frontend/dist/
 # Bỏ qua file log hoặc file tạm
 *.log
 .DS_Store
+temp_login.jpg
 # Bỏ qua các file thực thi
 *.exe
 *.dll

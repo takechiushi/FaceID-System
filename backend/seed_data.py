@@ -9,10 +9,10 @@ from tqdm import tqdm # Thư viện thanh tiến trình (pip install tqdm)
 
 # --- CẤU HÌNH ĐƯỜNG DẪN (BẠN SỬA LẠI CHO ĐÚNG) ---
 # 1. Đường dẫn đến thư mục chứa dữ liệu VGGFace2 trên máy bạn
-VGGFACE_ROOT = r"D:\1.Study\1.Caohoc\K37\1.ML\1.CODE\BTCK\VGGFace2\train" 
+VGGFACE_ROOT = r"D:\1.Study\1.Caohoc\K37\1.ML\1.CODE\BTCK\VGGFace2\VGGFace2_Filtered" 
 
 # 2. Số lượng người muốn thêm
-NUM_PEOPLE = 200 
+NUM_PEOPLE = 480 
 
 # 3. Đường dẫn thư mục uploads của Backend (để copy avatar sang cho Web hiện)
 BACKEND_UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "static", "uploads")
@@ -23,7 +23,7 @@ db = client["FaceDB"]
 users_col = db["users"]
 vectors_col = db["vectors"]
 
-print("⏳ Đang khởi tạo ArcFace (có thể mất vài giây)...")
+print("⏳ Đang khởi tạo ArcFace...")
 app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
 app.prepare(ctx_id=0, det_size=(640, 640))
 
@@ -83,17 +83,18 @@ def seed_database():
         os.makedirs(dest_folder, exist_ok=True)
         
         # Copy ảnh đầu tiên làm avatar
-        avatar_src = os.path.join(person_path, process_images[0])
-        avatar_dst = os.path.join(dest_folder, process_images[0])
+        avatar_src = os.path.join(person_path, process_images[3])
+        avatar_dst = os.path.join(dest_folder, process_images[3])
         shutil.copy2(avatar_src, avatar_dst)
         
         # Đường dẫn tương đối để lưu vào DB (Backend API sẽ phục vụ file này)
         # Lưu ý: dùng dấu gạch chéo / cho chuẩn web
-        db_avatar_path = f"static/uploads/{person_id}/{process_images[0]}"
+        db_avatar_path = f"static/uploads/{person_id}/{process_images[3]}"
 
         # --- BƯỚC 2: INSERT USER VÀO MONGODB ---
         user_doc = {
             "name": user_name,
+            "role": "user",
             "age": user_age,
             "avatar": db_avatar_path
         }

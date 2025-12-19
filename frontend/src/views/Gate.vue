@@ -9,7 +9,6 @@
         <div class="logo-circle">AI</div>
         <div class="brand-text">
           <h2>FACE ID SYSTEM</h2>
-          <small>Cổng kiểm soát an ninh</small>
         </div>
       </div>
       <router-link to="/admin-login" class="btn-admin">
@@ -18,6 +17,11 @@
     </div>
 
     <div class="content-wrapper">
+      <transition name="fade">
+        <div v-if="showUnknown" class="warning-toast">
+            ⚠️ Không nhận diện được người dùng!
+        </div>
+      </transition>
       <div class="camera-frame" :class="{ 'inactive': recognizedUser }">
         <video ref="video" autoplay playsinline muted></video>
         
@@ -100,6 +104,8 @@ const recognizedUser = ref(null);
 const currentTime = ref('');
 const isUploading = ref(false);
 let intervalId = null;
+const showUnknown = ref(false);
+let unknownTimer = null; // Để đếm giờ tự tắt thông báo
 
 // --- HÀM XỬ LÝ URL ẢNH (FIX LỖI ẢNH) ---
 const getAvatarUrl = (path) => {
@@ -160,9 +166,29 @@ const captureAndCheck = async () => {
 
   try {
     const res = await axios.post('http://localhost:5000/api/recognize', formData);
-    if (res.data.found) handleSuccess(res.data.user);
+    if (res.data.found) {
+      handleSuccess(res.data.user);
+      showUnknown.value = false; // Tắt cảnh báo lỗi ngay
+    } else {
+      // Hiện cảnh báo lỗi không nhận diện
+        triggerUnknownAlert();      
+      }
+
   } catch (e) { }
 };
+
+// --- Hàm hiển thị cảnh báo (Chống nhấp nháy) ---
+const triggerUnknownAlert = () => {
+    showUnknown.value = true;
+    
+    // Reset bộ đếm cũ để thông báo luôn hiện nếu người đó vẫn đứng đó
+    if (unknownTimer) clearTimeout(unknownTimer);
+    
+    // Tự động tắt sau 2 giây nếu họ bỏ đi
+    unknownTimer = setTimeout(() => {
+        showUnknown.value = false;
+    }, 2000);
+}
 
 // 2. Upload Logic
 const handleFileUpload = async (event) => {
@@ -235,6 +261,37 @@ onUnmounted(() => {
 
 /* --- 3. CAMERA FRAME --- */
 .content-wrapper { z-index: 1; margin-top: 40px; display: flex; flex-direction: column; align-items: center; }
+
+.warning-toast {
+  background: rgba(239, 68, 68, 0.9); /* Màu đỏ */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 15px; /* Cách camera một chút */
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  display: flex; align-items: center; gap: 8px;
+  animation: shake 0.5s; /* Rung lắc nhẹ để gây chú ý */
+}
+
+.alert-border {
+  border-color: #ef4444 !important; /* Đổi viền trắng thành đỏ */
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Animation Rung lắc */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* Animation ẩn hiện mượt mà */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 
 .camera-frame {
   position: relative; width: 680px; height: 480px;

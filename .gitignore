@@ -7,13 +7,15 @@ __pycache__/
 # Bỏ qua thư mục thư viện Nodejs (Rất nặng)
 frontend/node_modules/
 frontend/dist/
-
+DATA/
 # Bỏ qua file log hoặc file tạm
 *.log
 .DS_Store
 temp_login.jpg
 # Bỏ qua các file thực thi
 *.exe
+*.docx
+*.pdf
 *.dll
 # (Tùy chọn) Nếu file dữ liệu backup quá lớn (>100MB) thì bỏ qua, 
 # nhưng trường hợp của bạn nhỏ nên cứ để lại để sync cho tiện.
